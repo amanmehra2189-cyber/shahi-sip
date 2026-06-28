@@ -212,7 +212,7 @@
     let currentPrice = 0;
     let currentProduct = "";
     
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz2rIDJwv82Q0pH3xoY3ppzCs_9ddeI1CLq1q0opbwB2e66E3lYguZmcmbIm_yMvG6O/exec";
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzObRa8StRKxLW1XH7PxyMoWzz3Tqt5m7VOhxE3T_yludbAnYJy8w0AW91Swyaehex3/exec";
 
     function openOrderForm(productName, price) {
       currentPrice = price;
