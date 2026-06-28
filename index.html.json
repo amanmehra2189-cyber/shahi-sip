@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shahi Sip - Royal Refreshment</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+  <style>
+    /* --- REFINED INTERFACE STYLES --- */
+    :root {
+      --gold: #c5a059;
+      --dark-gold: #9e7e43;
+      --black: #0f0f0f;
+      --soft-white: #f9f9f9;
+    }
+
+    body { 
+      margin: 0; 
+      font-family: 'Poppins', sans-serif; 
+      background-color: var(--soft-white); 
+      color: #333; 
+      scroll-behavior: smooth;
+    }
+
+    /* Navbar Upgrade */
+    .navbar { 
+      background-color: var(--black); 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      padding: 15px 5%; 
+      border-bottom: 3px solid var(--gold); 
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    .logo img { height: 70px; transition: transform 0.3s; }
+    .logo img:hover { transform: scale(1.05); }
+
+    /* Hero Upgrade */
+    .hero { 
+      position: relative; 
+      height: 550px; 
+      background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.2)), 
+                  url('show.jpg') center/cover no-repeat; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      text-align: center;
+    }
+
+    /* Products Section Upgrade */
+    .products { padding: 80px 5%; text-align: center; background-color: var(--soft-white); }
+    .products h2 { 
+      font-family: 'Cinzel', serif; 
+      font-size: 2.5rem; 
+      color: var(--black); 
+      margin-bottom: 40px;
+      position: relative;
+      display: inline-block;
+    }
+    .products h2::after {
+      content: ''; display: block; width: 60px; height: 3px; background: var(--gold); margin: 10px auto;
+    }
+
+    .product-grid { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; }
+    
+    .product-card { 
+      background-color: var(--black); 
+      border: 1px solid var(--gold); 
+      padding: 40px 25px; 
+      width: 320px; 
+      color: #fff; 
+      border-radius: 15px; 
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    }
+    .product-card:hover { 
+      transform: translateY(-15px); 
+      box-shadow: 0 20px 40px rgba(197, 160, 89, 0.3);
+    }
+    .product-card img { width: 100%; height: auto; margin-bottom: 25px; border-radius: 8px; }
+    .product-card h3 { font-family: 'Cinzel', serif; font-size: 1.4rem; letter-spacing: 1px; }
+
+    .price { font-size: 2.8rem; color: var(--gold); font-weight: 600; margin: 15px 0; }
+    
+    .btn-gold { 
+      background: linear-gradient(135deg, var(--gold), #e0c07e); 
+      color: #000; border: none; padding: 15px 25px; 
+      font-weight: bold; text-transform: uppercase; cursor: pointer; 
+      border-radius: 50px; width: 100%; transition: 0.3s;
+      letter-spacing: 1px;
+    }
+    .btn-gold:hover { background: #fff; color: var(--black); transform: scale(1.02); }
+
+    /* --- MODAL (OVERLAY) UPGRADE --- */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(5px);
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .phone-mockup {
+      width: 90%;
+      max-width: 420px;
+      background-color: #fff;
+      border-radius: 24px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+      animation: modalSlide 0.4s ease-out;
+    }
+
+    @keyframes modalSlide {
+      from { transform: translateY(30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .form-container { padding: 40px 30px; color: #333; }
+    .form-group { margin-bottom: 20px; }
+    label { font-size: 12px; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    
+    input { 
+      width: 100%; padding: 12px; border: 1px solid #eee; border-radius: 8px; 
+      background: #fcfcfc; font-family: inherit; transition: border 0.3s;
+    }
+    input:focus { outline: none; border-color: var(--gold); background: #fff; }
+
+    .pincode-city-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+
+    .close-modal {
+      position: absolute; top: 20px; right: 25px;
+      font-size: 28px; cursor: pointer; color: #ccc; transition: 0.3s;
+    }
+    .close-modal:hover { color: var(--gold); }
+  </style>
+</head>
+<body>
+
+  <header class="navbar">
+    <div class="logo"><img src="logo.jpg" alt="Logo"/></div>
+  </header>
+
+  <section class="hero"></section>
+
+  <section class="products">
+    <h2>Select Your Refreshment</h2>
+    <div class="product-grid">
+      <div class="product-card">
+        <img src="product.jpg" alt="400ml"/>
+        <h3>400ml SHAHI SIP</h3>
+        <p class="price">₹149</p>
+        <button class="btn-gold" onclick="openOrderForm('400ml Shahi Sip', 149)">Order Now</button>
+      </div>
+      <div class="product-card">
+        <img src="product.jpg" alt="800ml"/>
+        <h3>800ml SHAHI SIP</h3>
+        <p class="price">₹299</p>
+        <button class="btn-gold" onclick="openOrderForm('800ml Shahi Sip', 299)">Order Now</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="modal-overlay" id="orderModal">
+    <div class="phone-mockup">
+      <span class="close-modal" onclick="closeOrderForm()">&times;</span>
+      <div class="form-container">
+        <h3 id="selectedProduct" style="margin-top:0; color:var(--dark-gold); font-family: 'Cinzel', serif;">Address Details</h3>
+        <p style="font-size: 14px; color: #666; margin-bottom: 25px;">Enter your delivery details below</p>
+        
+        <form onsubmit="handleOrder(event)">
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="custName" placeholder="Your Name" required>
+            </div>
+            <div class="form-group">
+                <label>Phone Number</label>
+                <input type="tel" id="custPhone" placeholder="98765 43210" pattern="[0-9]{10}" required>
+            </div>
+            <div class="form-group">
+                <label>Delivery Address</label>
+                <input type="text" id="custLandmark" placeholder="Flat, Building, Landmark" style="margin-bottom:10px;">
+                <input type="text" id="custVillage" placeholder="Area, Street, Village" required style="margin-bottom:10px;">
+                <input type="text" id="custDistrict" placeholder="District" required>
+            </div>
+            <div class="pincode-city-row">
+                <div class="form-group">
+                    <label>State</label>
+                    <input type="text" id="custState" placeholder="State" required>
+                </div>
+                <div class="form-group">
+                    <label>Pincode</label>
+                    <input type="tel" id="custPincode" placeholder="123456" pattern="[0-9]{6}" required>
+                </div>
+            </div>
+            <button type="submit" class="btn-gold" style="margin-top:15px; padding: 18px;">Confirm & Pay</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentPrice = 0;
+    let currentProduct = "";
+    
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz2rIDJwv82Q0pH3xoY3ppzCs_9ddeI1CLq1q0opbwB2e66E3lYguZmcmbIm_yMvG6O/exec";
+
+    function openOrderForm(productName, price) {
+      currentPrice = price;
+      currentProduct = productName;
+      document.getElementById('orderModal').style.display = 'flex';
+      document.getElementById('selectedProduct').innerText = productName;
+    }
+
+    function handleOrder(event) {
+      event.preventDefault();
+
+      // Collect complete information for processing
+      const orderPayload = {
+        product: currentProduct,
+        price: currentPrice,
+        name: document.getElementById('custName').value,
+        phone: document.getElementById('custPhone').value,
+        landmark: document.getElementById('custLandmark').value,
+        village: document.getElementById('custVillage').value,
+        district: document.getElementById('custDistrict').value,
+        state: document.getElementById('custState').value,
+        pincode: document.getElementById('custPincode').value
+      };
+
+      // Razorpay Integration
+      var options = {
+          "key": "rzp_test_Sp6r4IbQTtCkaM", 
+          "amount": currentPrice * 100, // Amount in paise
+          "currency": "INR",
+          "name": "Shahi Sip",
+          "description": "Payment for " + currentProduct,
+          "image": "logo.jpg",
+          "handler": function (response){
+              
+              // Append payment id to payload for tracking
+              orderPayload.payment_id = response.razorpay_payment_id;
+
+              // PAYMENT SUCCESS BLOCK: Post directly to Google Sheet
+              fetch(GOOGLE_SCRIPT_URL, {
+                method: "POST",
+                mode: "no-cors", 
+                headers: {
+                  "Content-Type": "application/json"
+                },
+                body: JSON.stringify(orderPayload)
+              })
+              .then(() => {
+                alert("Order Placed Successfully!\nPayment ID: " + response.razorpay_payment_id);
+                closeOrderForm();
+              })
+              .catch((err) => {
+                console.error("Transmission failed: ", err);
+                alert("Payment complete! Saving to system...");
+              });
+          },
+          "prefill": {
+              "name": orderPayload.name,
+              "contact": orderPayload.phone
+          },
+          "theme": {
+              "color": "#c5a059"
+          }
+      };
+
+      var rzp1 = new Razorpay(options);
+      
+      rzp1.on('payment.failed', function (response){
+              alert("Payment Failed: " + response.error.description);
+      });
+
+      rzp1.open();
+    }
+
+    function closeOrderForm() {
+      document.getElementById('orderModal').style.display = 'none';
+    }
+
+    window.onclick = function(event) {
+      let modal = document.getElementById('orderModal');
+      if (event.target == modal) {
+        closeOrderForm();
+      }
+    }
+  </script>
+
+</body>
+</html>
