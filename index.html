@@ -9,7 +9,6 @@
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
   <style>
-    /* --- REFINED INTERFACE STYLES --- */
     :root {
       --gold: #c5a059;
       --dark-gold: #9e7e43;
@@ -25,7 +24,6 @@
       scroll-behavior: smooth;
     }
 
-    /* Navbar Upgrade */
     .navbar { 
       background-color: var(--black); 
       display: flex; 
@@ -41,7 +39,6 @@
     .logo img { height: 70px; transition: transform 0.3s; }
     .logo img:hover { transform: scale(1.05); }
 
-    /* Hero Upgrade */
     .hero { 
       position: relative; 
       height: 550px; 
@@ -53,7 +50,6 @@
       text-align: center;
     }
 
-    /* Products Section Upgrade */
     .products { padding: 80px 5%; text-align: center; background-color: var(--soft-white); }
     .products h2 { 
       font-family: 'Cinzel', serif; 
@@ -97,7 +93,6 @@
     }
     .btn-gold:hover { background: #fff; color: var(--black); transform: scale(1.02); }
 
-    /* --- MODAL (OVERLAY) UPGRADE --- */
     .modal-overlay {
       display: none;
       position: fixed;
@@ -132,6 +127,7 @@
     input { 
       width: 100%; padding: 12px; border: 1px solid #eee; border-radius: 8px; 
       background: #fcfcfc; font-family: inherit; transition: border 0.3s;
+      box-sizing: border-box;
     }
     input:focus { outline: none; border-color: var(--gold); background: #fff; }
 
@@ -177,18 +173,18 @@
         <h3 id="selectedProduct" style="margin-top:0; color:var(--dark-gold); font-family: 'Cinzel', serif;">Address Details</h3>
         <p style="font-size: 14px; color: #666; margin-bottom: 25px;">Enter your delivery details below</p>
         
-        <form onsubmit="handleOrder(event)">
+        <form id="orderForm" onsubmit="handleOrder(event)">
             <div class="form-group">
                 <label>Full Name</label>
                 <input type="text" id="custName" placeholder="Your Name" required>
             </div>
             <div class="form-group">
                 <label>Phone Number</label>
-                <input type="tel" id="custPhone" placeholder="98765 43210" pattern="[0-9]{10}" required>
+                <input type="tel" id="custPhone" placeholder="9876543210" pattern="[0-9]{10}" required>
             </div>
             <div class="form-group">
                 <label>Delivery Address</label>
-                <input type="text" id="custLandmark" placeholder="Flat, Building, Landmark (Not Required)" style="margin-bottom:10px;">
+                <input type="text" id="custLandmark" placeholder="Flat, Building, Landmark (Optional)" style="margin-bottom:10px;">
                 <input type="text" id="custVillage" placeholder="Area, Street, Village" required style="margin-bottom:10px;">
                 <input type="text" id="custDistrict" placeholder="District" required>
             </div>
@@ -211,8 +207,12 @@
   <script>
     let currentPrice = 0;
     let currentProduct = "";
-    
+
+    // Replace with your current Apps Script Web App URL if redeployed
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzObRa8StRKxLW1XH7PxyMoWzz3Tqt5m7VOhxE3T_yludbAnYJy8w0AW91Swyaehex3/exec";
+
+    // Set to your active Razorpay Key (rzp_test_... or rzp_live_...)
+    const RAZORPAY_KEY = "rzp_test_Sp6r4IbQTtCkaM";
 
     function openOrderForm(productName, price) {
       currentPrice = price;
@@ -224,63 +224,61 @@
     function handleOrder(event) {
       event.preventDefault();
 
-      // Collect complete information for processing
       const orderPayload = {
+        timestamp: new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
         product: currentProduct,
         price: currentPrice,
-        name: document.getElementById('custName').value,
-        phone: document.getElementById('custPhone').value,
-        landmark: document.getElementById('custLandmark').value,
-        village: document.getElementById('custVillage').value,
-        district: document.getElementById('custDistrict').value,
-        state: document.getElementById('custState').value,
-        pincode: document.getElementById('custPincode').value
+        name: document.getElementById('custName').value.trim(),
+        phone: document.getElementById('custPhone').value.trim(),
+        landmark: document.getElementById('custLandmark').value.trim(),
+        village: document.getElementById('custVillage').value.trim(),
+        district: document.getElementById('custDistrict').value.trim(),
+        state: document.getElementById('custState').value.trim(),
+        pincode: document.getElementById('custPincode').value.trim()
       };
 
-      // Razorpay Integration
-      var options = {
-          "key": "rzp_test_Sp6r4IbQTtCkaM", 
-          "amount": currentPrice * 100, // Amount in paise
-          "currency": "INR",
-          "name": "Shahi Sip",
-          "description": "Payment for " + currentProduct,
-          "image": "logo.jpg",
-          "handler": function (response){
-              
-              // Append payment id to payload for tracking
-              orderPayload.payment_id = rzp_live_TWeazc0v6oju3p;
+      const options = {
+        "key": RAZORPAY_KEY,
+        "amount": currentPrice * 100,
+        "currency": "INR",
+        "name": "Shahi Sip",
+        "description": "Payment for " + currentProduct,
+        "image": "logo.jpg",
+        "handler": function (response) {
+          orderPayload.payment_id = response.razorpay_payment_id;
 
-              // PAYMENT SUCCESS BLOCK: Post directly to Google Sheet
-              fetch(GOOGLE_SCRIPT_URL, {
-                method: "POST",
-                mode: "no-cors", 
-                headers: {
-                  "Content-Type": "application/json"
-                },
-                body: JSON.stringify(orderPayload)
-              })
-              .then(() => {
-                alert("Order Placed Successfully!\nPayment ID: " + response.razorpay_payment_id);
-                closeOrderForm();
-              })
-              .catch((err) => {
-                console.error("Transmission failed: ", err);
-                alert("Payment complete! Saving to system...");
-              });
-          },
-          "prefill": {
-              "name": orderPayload.name,
-              "contact": orderPayload.phone
-          },
-          "theme": {
-              "color": "#c5a059"
-          }
+          fetch(GOOGLE_SCRIPT_URL, {
+            method: "POST",
+            mode: "no-cors",
+            headers: {
+              "Content-Type": "text/plain;charset=utf-8"
+            },
+            body: JSON.stringify(orderPayload)
+          })
+          .then(() => {
+            alert("Order Placed Successfully!\nPayment ID: " + response.razorpay_payment_id);
+            document.getElementById('orderForm').reset();
+            closeOrderForm();
+          })
+          .catch((err) => {
+            console.error("Sheet sync failed: ", err);
+            alert("Payment complete! Reference ID: " + response.razorpay_payment_id);
+            closeOrderForm();
+          });
+        },
+        "prefill": {
+          "name": orderPayload.name,
+          "contact": orderPayload.phone
+        },
+        "theme": {
+          "color": "#c5a059"
+        }
       };
 
-      var rzp1 = new Razorpay(options);
+      const rzp1 = new Razorpay(options);
       
-      rzp1.on('payment.failed', function (response){
-              alert("Payment Failed: " + response.error.description);
+      rzp1.on('payment.failed', function (response) {
+        alert("Payment Failed: " + response.error.description);
       });
 
       rzp1.open();
@@ -291,12 +289,11 @@
     }
 
     window.onclick = function(event) {
-      let modal = document.getElementById('orderModal');
-      if (event.target == modal) {
+      const modal = document.getElementById('orderModal');
+      if (event.target === modal) {
         closeOrderForm();
       }
-    }
+    };
   </script>
-
 </body>
 </html>
