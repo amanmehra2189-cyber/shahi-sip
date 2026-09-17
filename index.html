@@ -16,12 +16,18 @@
       --soft-white: #f9f9f9;
     }
 
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
     body { 
       margin: 0; 
       font-family: 'Poppins', sans-serif; 
       background-color: var(--soft-white); 
       color: #333; 
       scroll-behavior: smooth;
+      overflow-x: hidden;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .navbar { 
@@ -29,115 +35,256 @@
       display: flex; 
       justify-content: center; 
       align-items: center; 
-      padding: 15px 5%; 
+      padding: 12px 16px; 
       border-bottom: 3px solid var(--gold); 
-      box-shadow: 0 4px 15px rgba(0,0,0.3);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
       position: sticky;
       top: 0;
       z-index: 500;
     }
-    .logo img { height: 60px; transition: transform 0.2s; }
+
+    .logo img { 
+      height: 48px; 
+      max-width: 100%;
+      object-fit: contain;
+      transition: transform 0.2s; 
+    }
+    
+    @media (min-width: 768px) {
+      .logo img { height: 60px; }
+      .navbar { padding: 15px 5%; }
+    }
+
     .logo img:hover { transform: scale(1.05); }
 
+    /* Hero Banner displaying shoe.jpg */
     .hero { 
       position: relative; 
-      height: 50px; 
-      background: linear-gradient(rgba(0,0,0.4), rgba(0,0,0.2)), 
-                  url('show.jpg') center/cover no-repeat; 
+      width: 100%;
+      height: 260px; 
+      background: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.35)), 
+                  url('shoe.jpg') center/cover no-repeat; 
       display: flex; 
       align-items: center; 
       justify-content: center; 
       text-align: center;
+      box-shadow: inset 0 -10px 20px rgba(0,0,0,0.4);
     }
 
-    .products { padding: 80px 5%; text-align: center; background-color: var(--soft-white); }
+    @media (min-width: 768px) {
+      .hero {
+        height: 420px;
+      }
+    }
+
+    .products { 
+      padding: 40px 16px; 
+      text-align: center; 
+      background-color: var(--soft-white); 
+    }
+
     .products h2 { 
       font-family: 'Cinzel', serif; 
-      font-size: 2.5rem; 
+      font-size: 1.8rem; 
       color: var(--black); 
-      margin-bottom: 40px;
+      margin: 0 0 30px;
       position: relative;
       display: inline-block;
-    }
-    .products h2::after {
-      content: ''; display: block; width: 60px; height: 3px; background: var(--gold); margin: 10px auto;
+      line-height: 1.3;
     }
 
-    .product-grid { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; }
+    .products h2::after { 
+      content: ''; 
+      display: block; 
+      width: 50px; 
+      height: 3px; 
+      background: var(--gold); 
+      margin: 10px auto 0; 
+    }
+
+    .product-grid { 
+      display: flex; 
+      justify-content: center; 
+      gap: 24px; 
+      flex-wrap: wrap; 
+      width: 100%;
+    }
     
     .product-card { 
       background-color: var(--black); 
       border: 1px solid var(--gold); 
-      padding: 40px 25px; 
-      width: 320px; 
+      padding: 30px 20px; 
+      width: 100%;
+      max-width: 340px; 
       color: #fff; 
-      border-radius: 15px; 
-      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      border-radius: 16px; 
+      transition: all 0.3s ease;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.12);
     }
-    .product-card:hover { 
-      transform: translateY(-15px); 
-      box-shadow: 0 20px 40px rgba(197, 160, 89, 0.3);
-    }
-    .product-card img { width: 100%; height: auto; margin-bottom: 25px; border-radius: 8px; }
-    .product-card h3 { font-family: 'Cinzel', serif; font-size: 1.4rem; letter-spacing: 1px; }
 
-    .price { font-size: 2.8rem; color: var(--gold); font-weight: 600; margin: 15px 0; }
+    .product-card:hover { 
+      transform: translateY(-6px); 
+      box-shadow: 0 16px 32px rgba(197, 160, 89, 0.25); 
+    }
+
+    .product-card img { 
+      width: 100%; 
+      max-width: 220px; 
+      height: auto; 
+      margin: 0 auto 20px; 
+      display: block; 
+      border-radius: 8px; 
+    }
+
+    .product-card h3 { 
+      font-family: 'Cinzel', serif; 
+      font-size: 1.25rem; 
+      letter-spacing: 0.5px; 
+      margin: 0 0 10px;
+    }
+
+    .price { 
+      font-size: 2.2rem; 
+      color: var(--gold); 
+      font-weight: 600; 
+      margin: 10px 0 20px; 
+    }
     
     .btn-gold { 
       background: linear-gradient(135deg, var(--gold), #e0c07e); 
-      color: #000; border: none; padding: 15px 25px; 
-      font-weight: bold; text-transform: uppercase; cursor: pointer; 
-      border-radius: 50px; width: 100%; transition: 0.3s;
-      letter-spacing: 1px;
-    }
-    .btn-gold:hover { background: #fff; color: var(--black); transform: scale(1.02); }
-
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.85);
-      backdrop-filter: blur(5px);
-      z-index: 2000;
-      justify-content: center;
-      align-items: center;
+      color: #000; 
+      border: none; 
+      padding: 14px 20px; 
+      font-weight: 700; 
+      text-transform: uppercase; 
+      cursor: pointer; 
+      border-radius: 50px; 
+      width: 100%; 
+      font-size: 0.95rem; 
+      transition: 0.2s; 
+      letter-spacing: 1px; 
+      touch-action: manipulation;
     }
 
-    .phone-mockup {
-      width: 90%;
-      max-width: 420px;
-      background-color: #fff;
-      border-radius: 24px;
-      overflow: hidden;
-      position: relative;
-      box-shadow: 0 25px 50px rgba(0,0,0,0.5);
-      animation: modalSlide 0.4s ease-out;
+    .btn-gold:active { 
+      transform: scale(0.98); 
     }
 
-    @keyframes modalSlide {
-      from { transform: translateY(30px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
+    .modal-overlay { 
+      display: none; 
+      position: fixed; 
+      top: 0; 
+      left: 0; 
+      width: 100%; 
+      height: 100%; 
+      background: rgba(0,0,0,0.85); 
+      backdrop-filter: blur(5px); 
+      z-index: 2000; 
+      justify-content: center; 
+      align-items: center; 
+      padding: 16px;
     }
 
-    .form-container { padding: 40px 30px; color: #333; }
-    .form-group { margin-bottom: 20px; }
-    label { font-size: 12px; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    .phone-mockup { 
+      width: 100%; 
+      max-width: 440px; 
+      max-height: 90vh; 
+      display: flex; 
+      flex-direction: column; 
+      background-color: #fff; 
+      border-radius: 20px; 
+      overflow: hidden; 
+      position: relative; 
+      box-shadow: 0 25px 50px rgba(0,0,0,0.5); 
+      animation: modalSlide 0.3s ease-out; 
+    }
+
+    @keyframes modalSlide { 
+      from { transform: translateY(20px); opacity: 0; } 
+      to { transform: translateY(0); opacity: 1; } 
+    }
+
+    .form-container { 
+      padding: 30px 20px 25px; 
+      overflow-y: auto; 
+      -webkit-overflow-scrolling: touch; 
+      color: #333; 
+    }
+
+    .form-group { 
+      margin-bottom: 16px; 
+      text-align: left;
+    }
+
+    label { 
+      display: block; 
+      font-size: 11px; 
+      color: #777; 
+      text-transform: uppercase; 
+      letter-spacing: 0.8px; 
+      margin-bottom: 6px; 
+      font-weight: 600;
+    }
     
     input { 
-      width: 100%; padding: 12px; border: 1px solid #eee; border-radius: 8px; 
-      background: #fcfcfc; font-family: inherit; transition: border 0.3s;
-      box-sizing: border-box;
+      width: 100%; 
+      padding: 12px 14px; 
+      border: 1px solid #ddd; 
+      border-radius: 8px; 
+      background: #fafafa; 
+      font-family: inherit; 
+      font-size: 16px; 
+      transition: border 0.2s, background 0.2s; 
     }
-    input:focus { outline: none; border-color: var(--gold); background: #fff; }
 
-    .pincode-city-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-
-    .close-modal {
-      position: absolute; top: 20px; right: 25px;
-      font-size: 28px; cursor: pointer; color: #ccc; transition: 0.3s;
+    input:focus { 
+      outline: none; 
+      border-color: var(--gold); 
+      background: #fff; 
     }
-    .close-modal:hover { color: var(--gold); }
+
+    .pincode-city-row { 
+      display: grid; 
+      grid-template-columns: 1fr 1fr; 
+      gap: 12px; 
+    }
+
+    .close-modal { 
+      position: absolute; 
+      top: 10px; 
+      right: 15px; 
+      width: 36px; 
+      height: 36px; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      font-size: 30px; 
+      cursor: pointer; 
+      color: #777; 
+      transition: color 0.2s; 
+      z-index: 10;
+    }
+
+    .close-modal:hover, .close-modal:active { color: var(--gold); }
+
+    @media (max-width: 380px) {
+      .pincode-city-row {
+        grid-template-columns: 1fr;
+        gap: 0;
+      }
+      .form-container {
+        padding: 25px 15px 20px;
+      }
+    }
+
+    @media (min-width: 768px) {
+      .products { padding: 70px 5%; }
+      .products h2 { font-size: 2.4rem; }
+      .product-card { max-width: 320px; padding: 40px 25px; }
+      .product-card h3 { font-size: 1.4rem; }
+      .price { font-size: 2.8rem; }
+      .form-container { padding: 40px 30px; }
+    }
   </style>
 </head>
 <body>
@@ -146,7 +293,8 @@
     <div class="logo"><img src="logo.jpg" alt="Logo"/></div>
   </header>
 
-  <section class="hero"></section>
+  <!-- Hero Section loading shoe.jpg -->
+  <section class="hero" aria-label="Showcase Banner"></section>
 
   <section class="products">
     <h2>Select Your Refreshment</h2>
@@ -155,13 +303,13 @@
         <img src="product.jpg" alt="400ml"/>
         <h3>400ml SHAHI SIP</h3>
         <p class="price">₹19</p>
-        <button class="btn-gold" onclick="openOrderForm('400ml Shahi Sip', 19)">Order Now</button>
+        <button type="button" class="btn-gold" onclick="openOrderForm('400ml Shahi Sip', 19)">Order Now</button>
       </div>
       <div class="product-card">
         <img src="product.jpg" alt="800ml"/>
         <h3>800ml SHAHI SIP</h3>
         <p class="price">₹299</p>
-        <button class="btn-gold" onclick="openOrderForm('800ml Shahi Sip', 299)">Order Now</button>
+        <button type="button" class="btn-gold" onclick="openOrderForm('800ml Shahi Sip', 299)">Order Now</button>
       </div>
     </div>
   </section>
@@ -170,35 +318,35 @@
     <div class="phone-mockup">
       <span class="close-modal" onclick="closeOrderForm()">&times;</span>
       <div class="form-container">
-        <h3 id="selectedProduct" style="margin-top:0; color:var(--dark-gold); font-family: 'Cinzel', serif;">Address Details</h3>
-        <p style="font-size: 14px; color: #666; margin-bottom: 25px;">Enter your delivery details below</p>
+        <h3 id="selectedProduct" style="margin-top:0; margin-bottom: 5px; color:var(--dark-gold); font-family: 'Cinzel', serif; font-size: 1.3rem;">Address Details</h3>
+        <p style="font-size: 13px; color: #666; margin-top: 0; margin-bottom: 20px;">Enter your delivery details below</p>
         
         <form id="orderForm" onsubmit="handleOrder(event)">
+          <div class="form-group">
+            <label for="custName">Full Name</label>
+            <input type="text" id="custName" placeholder="Your Name" required autocomplete="name">
+          </div>
+          <div class="form-group">
+            <label for="custPhone">Phone Number</label>
+            <input type="tel" id="custPhone" placeholder="9876543210" pattern="[0-9]{10}" inputmode="numeric" required autocomplete="tel">
+          </div>
+          <div class="form-group">
+            <label>Delivery Address</label>
+            <input type="text" id="custLandmark" placeholder="Flat, Building, Landmark (Optional)" style="margin-bottom:10px;">
+            <input type="text" id="custVillage" placeholder="Area, Street, Village" required style="margin-bottom:10px;">
+            <input type="text" id="custDistrict" placeholder="District" required>
+          </div>
+          <div class="pincode-city-row">
             <div class="form-group">
-                <label>Full Name</label>
-                <input type="text" id="custName" placeholder="Your Name" required>
+              <label for="custState">State</label>
+              <input type="text" id="custState" placeholder="State" required>
             </div>
             <div class="form-group">
-                <label>Phone Number</label>
-                <input type="tel" id="custPhone" placeholder="9876543210" pattern="[0-9]{10}" required>
+              <label for="custPincode">Pincode</label>
+              <input type="tel" id="custPincode" placeholder="123456" pattern="[0-9]{6}" inputmode="numeric" required autocomplete="postal-code">
             </div>
-            <div class="form-group">
-                <label>Delivery Address</label>
-                <input type="text" id="custLandmark" placeholder="Flat, Building, Landmark (Optional)" style="margin-bottom:10px;">
-                <input type="text" id="custVillage" placeholder="Area, Street, Village" required style="margin-bottom:10px;">
-                <input type="text" id="custDistrict" placeholder="District" required>
-            </div>
-            <div class="pincode-city-row">
-                <div class="form-group">
-                    <label>State</label>
-                    <input type="text" id="custState" placeholder="State" required>
-                </div>
-                <div class="form-group">
-                    <label>Pincode</label>
-                    <input type="tel" id="custPincode" placeholder="123456" pattern="[0-9]{6}" required>
-                </div>
-            </div>
-            <button type="submit" class="btn-gold" style="margin-top:15px; padding: 18px;">Confirm & Pay</button>
+          </div>
+          <button type="submit" class="btn-gold" style="margin-top:10px; padding: 15px;">Confirm & Pay</button>
         </form>
       </div>
     </div>
@@ -208,7 +356,6 @@
     let currentPrice = 0;
     let currentProduct = "";
 
-    // Replace with your current Apps Script Web App URL if redeployed
     const GOOGLE_SCRIPT_URL = "Https://script.google.com/macros/s/AKfycbxpqEWkcqtmR9DF7pgPOZJJ66DO5cjk6rjVgYzRPY1CHE5cUStWcKV5yW-9_hNEowUT/exec";
     const RAZORPAY_KEY = "rzp_live_TWeazc0v6oJu3p";
 
@@ -217,6 +364,12 @@
       currentProduct = productName;
       document.getElementById('orderModal').style.display = 'flex';
       document.getElementById('selectedProduct').innerText = productName;
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeOrderForm() {
+      document.getElementById('orderModal').style.display = 'none';
+      document.body.style.overflow = '';
     }
 
     function handleOrder(event) {
@@ -280,10 +433,6 @@
       });
 
       rzp1.open();
-    }
-
-    function closeOrderForm() {
-      document.getElementById('orderModal').style.display = 'none';
     }
 
     window.onclick = function(event) {
